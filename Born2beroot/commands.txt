@@ -1,0 +1,72 @@
+I. УСТАНОВКА виртуальной машины и первая часть бонусов.
+https://www.youtube.com/watch?v=j1FAZ0bUEvs
+https://www.youtube.com/watch?v=13YBlD0SOJo
+https://www.youtube.com/watch?v=2w-2MX5QrQw
+
+lsblk                             \\ проверяем структуру разделов;
+sudo aa-status                    \\ cтатус AppArmor;
+
+
+II. Установка SUDO и добавление пользователя(группы). 
+Привелигированные команды root запускаются через sudo.
+
+su -                              \\ перелючение на root;
+apt install sudo                  \\ установка пакетов sudo;
+илиssh 
+sudo apt update                   \\ обновление пакетов;
+dpkg -l | grep sudo               \\ проверка успешной установки sudo;
+sudo addgroup user42              \\ добавить группу
+adduser <username>                \\ добавить пользователя в группу sudo;
+sudo adduser username user42      \\ присвоенике нового пользователя группе судо и юзер42;
+                                  \\ чтобы изменения вступили в силу нужно перезагрузить машину;
+reboot                            \\ перезагрузка;
+getent group sudo/user            \\ проверка, есть ли новый пользователь, getent - получить элементы из базы данных;
+sudo chage -l <username>          \\ поддтверждение срока действия нового пароля для пользователя;
+sudo -v                           \\ идентифицировать, sudo обновит временную метку пользователя; 
+
+II.1 SSH
+
+sudo apt install openssh-server   \\ установка openssh-server;
+dpkg -l | grep ssh                \\ проверка установки;
+sudo vim /etc/ssh/sshd_config     \\ настройка ssh: подключаться через порт 4242, 
+                                                    отключить вход в качестве root;
+sudo service ssh status           \\ статус SSH;
+
+II.2 UFW
+
+sudo apt install ufw              \\ установка ufw;
+dpkg -l | grep ufw                \\ проверка;
+sudo ufw enable                   \\ включить брандмауэр;
+sudo ufw allow 4242               \\ разрешить подключения через порт 4242;
+sudo ufw status                   \\ статус UFW;
+
+II.3 ПОДКЛЮЧЕНИЕ К СЕРВЕРУ ЧЕРЕЗ SSH
+ssh user@127.0.0.1 -p 4242        \\ присоединение к виртуальной машине;
+exit                               
+ 
+III. Настройки пароля
+
+sudo mkdir /var/log/passwd        \\ записать команды в /etc/sudoers.d/passwd;
+								  \\ logfile - файл, содержащий системную информацию о действиях пользователей в хронологическом порядке;
+sudo vim /etc/sudoers.d/passwd	  \\ файл конфигурации судо (можно сначала прописать ls /etc/sudoers.d);
+								  \\ файл конфигурации - в нем хранятся настойки ОС или программы;
+                                  \\ файл sudoers содержит: псевдонимы (переменные) и определения пользователей (кто что может выполнять);
+
+vim /etc/login.defs               \\ файл политики истечения срока паролей; 30, 2, 7;
+sudo apt install libpam-pwquality \\ установить пакет libpam-pwquality, чтобы настроить политику паролей;
+dpkg -l | grep libpam-pwquality   \\ проверить установку;
+vim /etc/pam.d/common-password    \\ файл политики паролей; длина, 1 верхний регистр, 1 число, макс. 3 одинаковых сим., короч сабджект;
+sudo crontab -l                   \\ схема cron;
+passwd                            \\ изменить пароль;
+
+IV. cron
+sudo crontab -u root -e           \\ установка 
+sudo crontab -u root -l           \\ cat 
+
+V. Bonus 
+
+
+https://github.com/hanshazairi/42-born2beroot#setting-up-a-cron-job
+https://baigal.medium.com/born2beroot-e6e26dfb50ac
+https://github.com/a-parfenov/Born2beRoot
+https://winitpro.ru/index.php/2020/04/21/planirovshhik-zadach-cron-v-linux/
